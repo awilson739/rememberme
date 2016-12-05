@@ -1,6 +1,6 @@
 from flask import render_template, flash, redirect, sessions, url_for, request,g
 from flask_login import login_user, logout_user, current_user, login_required 
-from .forms import LoginForm
+from .forms import LoginForm,RegisterForm
 from app import app,db,lm
 from .models import User 
 @app.route('/')
@@ -14,8 +14,8 @@ def login():
       return redirect(url_for('index'))
    form = LoginForm()
    if form.validate_on_submit():
+      login_user(user)
       session['remember_me'] = form.remember_me.data
-      return True ###Add log in stuff
       flash('Login requested for','remember_me=%s'% str(form.remember_me.data))
       return redirect('/index')
    return render_template('login.html',title='Sign In',form=form)
@@ -24,9 +24,16 @@ def login():
 def load_user(id):
    return User.query.get(int(id))
 ###After login response
-@app.route('/register')
+@app.route('/register',methods=['GET','POST'])
 def register():
-   return True 
+   form = RegisterForm(request.form)
+   if request.method == 'POST' and form.validate():
+      user = User(form.username.data, form.email.data,
+                  form.password.data)
+      db_session.add(user)
+      flash('Thanks for registering')
+      return redirect(url_for('login')
+   return render_template('register.html',form=form)
 
 @app.before_request
 def before_request():
