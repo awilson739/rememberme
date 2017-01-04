@@ -2,7 +2,7 @@ from app import db
 
 class User(db.Model):
    id = db.Column(db.Integer, primary_key=True)
-   nickname = db.Column(db.String(64),index=True,unique=True)
+   username = db.Column(db.String(64),index=True,unique=True)
    password = db.Column(db.String(12),unique=True)
    email = db.Column(db.String(120),index=True,unique=True)
    task = db.relationship('Task',lazy='dynamic')
@@ -19,7 +19,7 @@ class User(db.Model):
    def get_id(self):
       try:
          return unicode(self.id)
-      except:
+      except NameError:
          return str(self.id) 
 
    def __repr__(self):
