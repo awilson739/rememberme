@@ -14,8 +14,8 @@ def login():
       return redirect(url_for('index'))
    form = LoginForm()
    if form.validate_on_submit():
-      login_user(user)
-      session['remember_me'] = form.remember_me.data
+      login_user(g.user)
+      #session['remember_me'] = form.remember_me.data
       flash('Login requested for','remember_me=%s'% str(form.remember_me.data))
       return redirect('/index')
    return render_template('login.html',title='Sign In',form=form)
@@ -24,6 +24,16 @@ def login():
 def load_user(id):
    return User.query.get(int(id))
 ###After login response
+def after_login(resp):
+   if user is None:
+      nickname = resp.nickname
+      if nickname is None or nickname == "":
+         nickname = resp.email.split('@')[0]
+      user = User(nickname=nickname, email=resp.email)
+      db.session.add(user)
+      db.session.commit()
+   return redirect(request.args.get('next') or url_for('index'))
+
 @app.route('/register',methods=['GET','POST'])
 def register():
    form = RegisterForm(request.form)
@@ -32,7 +42,7 @@ def register():
                   form.password.data)
       db_session.add(user)
       flash('Thanks for registering')
-      return redirect(url_for('login')
+      return redirect(url_for('login'))
    return render_template('register.html',form=form)
 
 @app.before_request
