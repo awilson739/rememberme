@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
    <body>
-   {% if current_user.is_authenticated %}
+   {% if g.user.is_authenticated %}
     <h1> Hello! </h1>
-   {% endif %}
-   </body>    
+   </body> 
+  {% endif %}
+    <h1> Nope </h1>
 {% endblock %}

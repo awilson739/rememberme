@@ -6,22 +6,23 @@ from app import app,db,lm
 from .models import User 
 @app.route('/')
 @app.route('/index')
-#@login_required	
+@login_required	
 def index():
    user = g.user
    return render_template('index.html',title="Remember Me!",user=user)
 
 @app.route('/login',methods=['GET','POST'])
 def login():
-   #if g.user is not None and g.user.is_authenticated:
-   #   return redirect(url_for('index'))
+   if g.user is not None and g.user.is_authenticated:
+      return redirect(url_for('index'))
    form = LoginForm()
    user = User()
    if form.validate_on_submit():
       login_user(user)
+      next = request.args.get('next')
       #session['remember_me'] = form.remember_me.data
-      #flash('Login requested for','remember_me=%s'% str(form.remember_me.data))
-      return redirect(url_for('index'))
+      flash('Logged in')
+      return redirect(next or url_for('index'))
    return render_template('login.html',title='Sign In',form=form)
 
 @lm.user_loader
