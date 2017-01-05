@@ -23,7 +23,7 @@ class User(db.Model):
          return str(self.id) 
 
    def __repr__(self):
-      return '<User %r>' % (self.nickname)
+      return '<User %r>' % (self.username)
 
 class Task(db.Model):
    id = db.Column(db.Integer,primary_key=True)
