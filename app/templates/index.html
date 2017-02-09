@@ -2,7 +2,9 @@
 {% block content %}
    <body>
    {% if g.user.is_authenticated %}
-    <h1> Hello! {{ current_user.username }} </h1>
+    <h1>  </h1>
+    <a href="{{url_for('user',username=g.user.username)}}">Your profile </a>
+    <a href="{{url_for('logout')}}">Logout</a>
    </body> 
   {% endif %}
 {% endblock %}

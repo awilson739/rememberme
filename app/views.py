@@ -11,6 +11,19 @@ def index():
    user = g.user
    return render_template('index.html',title="Remember Me!",user=user)
 
+
+
+@app.route('/user/<username>')
+@login_required
+def user(username):
+   user = User.query.filter_by(username=username).first()
+   if user == None:
+      flash('User %s not found' % username)
+      return redirect(url_for('index'))
+   task = [ {'body': 'Test!!!'},
+             {'body':'Test2'} ]
+   return render_template('user.html',user=user,task=task)
+
 @app.route('/login',methods=['GET','POST'])
 def login():
    #if g.user is not None and g.user.is_authenticated:
@@ -19,6 +32,7 @@ def login():
    #user = User()
    if form.validate_on_submit():
       user = User.query.filter_by(username=form.username.data).first()
+      ###This needs to be encrypted 
       if user is not None and user.password == form.password.data:      
          login_user(user)
          next = request.args.get('next')
